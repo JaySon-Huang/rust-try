@@ -5,11 +5,13 @@ use rand::Rng; // provide a random number generator
 use std::cmp::Ordering;
 
 fn main() {
-    println!("Guess the num!");
+    let lower_bound = 1;
+    let upper_bound = 101;
+    println!("Guess the num! {} ~ {}", lower_bound, upper_bound);
 
     let secret = rand::thread_rng() // get a copy of the rng
-        .gen_range(1, 100);
-    println!("The secret num is: {}", secret);
+        .gen_range(lower_bound, upper_bound);
+    // println!("The secret num is: {}", secret);
 
     loop {
         let mut guess = String::new();
@@ -19,9 +21,12 @@ fn main() {
             .ok()
             .expect("Failed to read line");
 
-        let guess: u32 = guess.trim().parse() { // compile error
+        let guess: u32 = match guess.trim().parse() {
             Ok(num) => num,
-            Err(_) => continue,
+            Err(_) => {
+                println!("Please Enter a number!\n");
+                continue;
+            }
         };
 
         println!("You guessed: {}", guess);

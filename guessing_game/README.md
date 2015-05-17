@@ -40,3 +40,9 @@ compile error:
     Could not compile `guessing_game`.
 
     To learn more, run the command again with --verbose.
+
+miss a match before that. fix:
+
+        let guess: u32 = match guess.trim().parse() {
+            // ...
+        };
