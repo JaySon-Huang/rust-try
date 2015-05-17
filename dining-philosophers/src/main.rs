@@ -1,3 +1,5 @@
+use std::thread;
+
 // represent a philosopher
 struct Philosopher {
     name: String,
@@ -17,6 +19,10 @@ impl Philosopher {
     }
 
     fn eat(&self) {
+        println!("{} is eating...", self.name);
+
+        thread::sleep_ms(1000);
+
         println!("{} is done eating", self.name);
     }
 }
@@ -32,7 +38,28 @@ fn main() {
     ];
 
     // iterate the philosophers, Vec<T>
-    for p in &philosophers {
-        p.eat();
+    // for p in &philosophers {
+    //     p.eat();
+    // }
+
+    /* operating in a concurrent fashion */
+
+    // `handles` is a `Vec` of handle of threads,
+    // `Vec<_>` let Rust figure out what type in the Vec
+    // `into_iter` create an iterator, then call `map` on it
+    let handles: Vec<_> = philosophers.into_iter().map(|p| {
+        // `thread::spawn` takes a closure as an argument
+        //   and executes it in a new thread.
+        // `move` means the closure take ownership of the values
+        //   it's capturing
+        thread::spawn(move || {
+            // call `eat` on p
+            p.eat();
+        })
+    }).collect(); // collect the result of `map` calls
+
+    for h in handles {
+        // `join` block execution until the thread has completed execution
+        h.join().unwrap();
     }
 }
