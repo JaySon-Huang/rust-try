@@ -23,3 +23,20 @@ which doesn't flush the output buffer?
 
 * * *
 
+This part make it error in compile stage:
+
+        let guess: u32 = guess.trim().parse() { // compile error
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+
+compile error:
+
+    >>> cargo run 
+       Compiling guessing_game v0.1.0 (file:///Users/JaySon/Projects/RustProjects/guessing_game)
+    src/main.rs:22:47: 22:48 error: expected one of `.`, `;`, or an operator, found `{`
+    src/main.rs:22         let guess: u32 = guess.trim().parse() {
+                                                                 ^
+    Could not compile `guessing_game`.
+
+    To learn more, run the command again with --verbose.
