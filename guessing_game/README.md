@@ -20,6 +20,11 @@ but when I use `print!("Input your guess:");`, which I don't want to print `'\n'
     Input your guess:You guessed: asdf
 
 which doesn't flush the output buffer?
+### About flush
+Reference:[std::print! - Rust](http://doc.rust-lang.org/stable/std/macro.print!.html)  
+> Note that stdout is frequently line-buffered by default so it may be necessary to use io::stdout().flush() to ensure the output is emitted immediately.
+
+If you want to ensure the string output in order, you should use `io::stdout().flush()` to flush the `stdout`
 
 * * *
 
