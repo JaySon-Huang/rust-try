@@ -1,41 +1,54 @@
-use std::fs;
-use std::path::Path;
+use std::io;
+use std::fs::{self, DirEntry};
 use std::env;
+use std::path::Path;
+
+extern crate crypto;
+use crypto::digest::Digest;
+use crypto::md5::Md5;
+
+
+fn md5_of_file(filepath: &Path) -> bool {
+    let mut hasher = Md5::new();
+    hasher.input_str("");
+    let out = hasher.result_str();
+    println!("hash of {} -> {}", filepath.to_str().unwrap(), out);
+    return true;
+}
+
+fn visit_dirs(dir: &Path) -> io::Result<()> {
+    for entry in try!(fs::read_dir(dir)) {
+        let entry: fs::DirEntry = try!(entry);
+        println!("{:?}", entry.path());
+        let metadata = try!(fs::metadata(&entry.path()));
+        if metadata.is_dir() {
+            try!(visit_dirs(&entry.path()));
+        } else {
+            md5_of_file(&entry.path());
+        }
+    }
+    Ok(())
+}
 
 fn main() {
-    // TODO: list files under `./` if no param, else list files under param
-    // Failed!
-    // let path = match env::args().len() {
-    //     1 => {
-    //         let exec_path: &Path = Path::new(".");
-    //         exec_path.parent().unwrap()
-    //     }
-    //     _ => {
-    //         let arg = env::args().nth(1).unwrap();
-    //         Path::new(&arg)
-    //     }
-    // };
+    // list files under `./` if no param, else list files under param 1
+    let path: String = match env::args().nth(1) {
+        None => ".".to_string(),
+        Some(arg) => arg,
+    };
+    let path: &Path = Path::new(&path);
 
-    let arg = env::args().nth(1).unwrap();
-    let path = match env::args().len() {
-        1 => {
-            let exec_path: &Path = Path::new(".");
-            exec_path.parent().unwrap()
+    println!("{:?}", path);
+    // check if path is a dir
+    let metadata = match fs::metadata(path) {
+        Ok(metadata) => {
+            if metadata.is_dir() {
+                let _ = visit_dirs(path);
+            }
         }
-        _ => {
-            Path::new(&arg)
+        Err(_) => {
+            println!("{} is not a Valid path!", path.display());
+            return
         }
     };
-
-    // let arg = env::args().nth(0).unwrap();
-    // let path = Path::new(&arg);
-
-    // check if path is a dir
-    let metadata = fs::metadata(path);
-    println!("{:?} is dir? {:?}", path, metadata.is_dir());
-
-    // for entry in try!(fs::read_dir(path)) {
-    //     let dir = try!(entry);
-    //     println!("{:?}", dir.path);
-    // }
 }

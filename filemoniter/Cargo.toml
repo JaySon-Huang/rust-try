@@ -2,3 +2,6 @@
 name = "filemoniter"
 version = "0.1.0"
 authors = ["JaySon-Huang <jayson.hjs@gmail.com>"]
+
+[dependencies]
+rust-crypto = "*"
