@@ -89,6 +89,7 @@ fn main() {
     let mut col_id_set: HashSet<_> = col_ids.iter().cloned().collect();
 
     let bs = table::encode_row(&mut ctx, col_values, &col_ids).unwrap();
+    println!("Encoded row: {:?}", hex::encode(&bs));
     assert!(!bs.is_empty());
     let mut ctx = EvalContext::default();
     let r = table::decode_row(&mut bs.as_slice(), &mut ctx, &cols).unwrap();
@@ -117,11 +118,12 @@ fn main() {
     // col_encoded.remove(&3);
     // assert_eq!(col_encoded, datums);
 
-    // let bs = table::encode_row(&mut ctx, vec![], &[]).unwrap();
-    // assert!(!bs.is_empty());
-    // assert!(table::decode_row(&mut bs.as_slice(), &mut ctx, &cols)
-    //     .unwrap()
-    //     .is_empty());
+    let bs = table::encode_row(&mut ctx, vec![], &[]).unwrap();
+    assert!(!bs.is_empty());
+    println!("Encoded row: {:?}", hex::encode(&bs));
+    assert!(table::decode_row(&mut bs.as_slice(), &mut ctx, &cols)
+        .unwrap()
+        .is_empty());
     // datums = cut_row_as_owned(&bs, &col_id_set);
     // assert!(datums.is_empty());
 }

@@ -6,9 +6,10 @@ edition = "2021"
 [dependencies]
 tidb_query_datatype = { git = "https://github.com/tikv/tikv", tag = "v8.5.0", package = "tidb_query_datatype" }
 tikv_alloc = { git = "https://github.com/tikv/tikv", tag = "v8.5.0", package = "tikv_alloc" }
-"chrono" = "0.4.22"
-"tokio" = { version = "1.38.2", features = ["full"] }
+chrono = "0.4.22"
+tokio = { version = "1.38.2", features = ["full"] }
 tipb = { git = "https://github.com/pingcap/tipb.git" }
+hex = "0.4.3"
 
 # Copy of tikv's to fix the compile error
 [patch.crates-io]
